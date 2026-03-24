@@ -66,12 +66,10 @@ core.register_on_mods_loaded(function()
 	core.register_chatcommand("toggle", {
 		params = "<privilege>",
 		func = function(name, param)
-			if session_disabled_privs[name] then
-				if session_disabled_privs[name][param] then
-					enable_priv(name, param)
-				else
-					disable_priv(name, param)
-				end
+			if session_disabled_privs[name][param] then
+				enable_priv(name, param)
+			else
+				disable_priv(name, param)
 			end
 		end
 	})
