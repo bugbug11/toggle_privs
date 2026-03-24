@@ -33,8 +33,13 @@ core.register_on_mods_loaded(function()
 			if session_disabled_privs[name] == nil then
 				session_disabled_privs[name] = {}
 			end
-			session_disabled_privs[name][param] = true
-			dump_state()
+			if session_disabled_privs[name][param] then
+				core.chat_send_player(name, "Privilege already disabled")
+			else
+				session_disabled_privs[name][param] = true
+				core.chat_send_player(name, "Disabled "..param)
+				dump_state()
+			end
 		else
 			core.chat_send_player(name, "You do not have this priv")
 		end
@@ -45,7 +50,10 @@ core.register_on_mods_loaded(function()
 			if type(session_disabled_privs[name]) == "table" then
 				if session_disabled_privs[name][param] then
 					session_disabled_privs[name][param] = nil
+					core.chat_send_player(name, "Enabled "..param)
 					dump_state()
+				else
+					core.chat_send_player(name, "Privilege already enabled")
 				end
 			end
 		else
