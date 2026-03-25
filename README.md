@@ -1,0 +1,2 @@
+# TODO
+Instead of overriding `core.get_player_privs`, have the mod override the `/grant` and `/revoke` commands to store granted privileges in a separate table and have the mod toggle actual privs, to account for builtin functionality, like the `interact` priv allowing players to interact with blocks. Currently, disabling `interact` still allows players to interact with blocks because the engine is reading the actual granted privileges instead of using the function `core.get_player_privs`.
