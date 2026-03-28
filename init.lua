@@ -1,3 +1,4 @@
+local toggle_privs = {}
 local storage = core.get_mod_storage()
 session_disabled_privs = {}
 
@@ -28,7 +29,7 @@ core.register_on_mods_loaded(function()
 
 	minetest.get_player_privs = core.get_player_privs
 
-	local disable_priv = function(name, param)
+	toggle_privs.disable_priv = function(name, param)
 		if old_core_get_player_privs(name)[param] then
 			if session_disabled_privs[name] == nil then
 				session_disabled_privs[name] = {}
@@ -45,7 +46,7 @@ core.register_on_mods_loaded(function()
 		end
 	end
 
-	local enable_priv = function(name, param)
+	toggle_privs.enable_priv = function(name, param)
 		if old_core_get_player_privs(name)[param] then
 			if type(session_disabled_privs[name]) == "table" then
 				if session_disabled_privs[name][param] then
@@ -60,25 +61,24 @@ core.register_on_mods_loaded(function()
 			core.chat_send_player(name, "You do not have this priv")
 		end
 	end
-
-	core.register_chatcommand("disable", {
-		params = "<privilege>",
-		func = disable_priv
-	})
-
-	core.register_chatcommand("enable", {
-		params = "<privilege>",
-		func = enable_priv
-	})
-
-	core.register_chatcommand("toggle", {
-		params = "<privilege>",
-		func = function(name, param)
-			if session_disabled_privs[name][param] then
-				enable_priv(name, param)
-			else
-				disable_priv(name, param)
-			end
-		end
-	})
 end)
+
+core.register_chatcommand("disable", {
+	params = "<privilege>",
+	func = toggle_privs.disable_priv
+})
+core.register_chatcommand("enable", {
+	params = "<privilege>",
+	func = toggle_privs.enable_priv
+})
+core.register_chatcommand("toggle", {
+	params = "<privilege>",
+	func = function(name, param)
+		if session_disabled_privs[name][param] then
+			toggle_privs.enable_priv(name, param)
+		else
+			toggle_privs.disable_priv(name, param)
+		end
+	end
+})
+
