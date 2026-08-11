@@ -112,7 +112,7 @@ else
         params = "<privilege>",
         func = function(name, args)
             if (not args) then return false end
-            core.registered_chatcommands["grant"].func(name,name.." "..args)
+            return core.registered_chatcommands["grant"].func(name,name.." "..args)
         end
     })
 
@@ -154,7 +154,7 @@ else
         params = "<privilege>",
         func = function(name, args)
             if (not args) then return false end
-            core.registered_chatcommands["revoke"].func(name,name.." "..args)
+            return core.registered_chatcommands["revoke"].func(name,name.." "..args)
         end
     })
 
@@ -188,7 +188,7 @@ else
     core.register_on_joinplayer(function(player)
         local player_meta = player:get_meta()
         if (not (player_meta:get_string("toggle_privs_converted")=="true")) then
-            player_meta:set_string("real_privs", core.privs_to_string(old_core_get_player_privs(player:get_player_name())))
+            player_meta:set_string("real_privs", core.privs_to_string(core.get_player_privs(player:get_player_name())))
             player_meta:set_string("toggle_privs_converted","true")
         end
     end)
