@@ -35,6 +35,8 @@ else
 
     -- Override privileges defined after this mod is loaded
     core.register_privilege = function(name, definition)
+        assert(type(definition)=="table" or type(definition)=="string")
+        if type(definition) == "string" then definition={description=definition,give_to_admin=true,give_to_singleplayer=true} end
         local priv_table = {}
         priv_table.give_to_singleplayer=definition.give_to_singleplayer
         priv_table.give_to_admin=definition.give_to_admin
@@ -43,6 +45,7 @@ else
         new_definition.give_to_singleplayer = false
         new_definition.give_to_admin = false
         old_core_register_privilege(name, new_definition)
+
     end
 
     -- Register the command "toggle" that toggles the state of a privilege (enabled or disabled)
