@@ -82,6 +82,7 @@ else
         return args
     end
 
+
     -- Override grant and revoke to work with the mod
 
     core.override_chatcommand("grant", {
@@ -156,14 +157,14 @@ else
     core.override_chatcommand("revokeme", {
         params = "<privilege>",
         func = function(name, args)
-            if (not args) then return false end
+            if (args=="") then return false end
             return core.registered_chatcommands["revoke"].func(name,name.." "..args)
         end
     })
 
     core.override_chatcommand("haspriv", {
         func = function(name, param)
-            if (not param) then return false end
+            if (param=="") then return false end
             local players_with_priv = {}
             for _,player in pairs(core.get_connected_players()) do
                 local player_meta = player:get_meta()
@@ -184,6 +185,34 @@ else
                     str = str..players_with_priv[i]..", "
                 end
                 str = str..players_with_priv[#players_with_priv]
+            end
+        end
+    })
+
+    core.override_chatcommand("privs", {
+        func = function(name, args)
+            if (args=="") then
+                local player = core.get_player_by_name(name)
+                local player_meta = player:get_meta()
+                local privs = core.string_to_privs(player_meta:get_string("real_privs"))
+                local str = ""
+                for priv,_ in pairs(privs) do
+                    str = str..priv..", "
+                end
+                return true, "Privileges of "..name..": "..str
+            else
+                local player = core.get_player_by_name(args)
+                if (player) then
+                    local player_meta = player:get_meta()
+                    local privs = core.string_to_privs(player_meta:get_string("real_privs"))
+                    local str = ""
+                    for priv,_ in pairs(privs) do
+                        str = str..priv..", "
+                    end
+                    return true, "Privileges of "..name..": "..str
+                else
+                    return false, "Player not online."
+                end
             end
         end
     })
